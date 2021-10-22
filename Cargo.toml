@@ -1,0 +1,22 @@
+[package]
+name = "timler"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rocket = "0.5.0-rc.1"
+dotenv = "0.15.0"
+serde = "1.0.130"
+chrono = "0.4.19"
+chrono-tz = "0.6.0"
+
+[dependencies.diesel]
+version = "1.4.8"
+features = [ "chrono" ]
+
+[dependencies.rocket_sync_db_pools]
+version = "0.1.0-rc.1"
+default-features = false
+features = [ "diesel_mysql_pool" ]
