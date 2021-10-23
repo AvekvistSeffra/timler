@@ -1,3 +1,5 @@
+use crate::models::EntryEntity;
+
 pub fn today() -> chrono::NaiveDate {
     use chrono::Datelike;
 
@@ -18,6 +20,7 @@ pub fn now() -> chrono::NaiveTime {
     chrono::NaiveTime::from_hms(now.hour(), now.minute(), now.second())
 }
 
+#[derive(Serialize)]
 pub struct Duration {
     pub hours: i64,
     pub minutes: i64,
@@ -36,15 +39,45 @@ impl Duration {
         let seconds = temp_duration.num_seconds();
 
         Duration {
-            hours,
-            minutes,
-            seconds,
+            hours: hours,
+            minutes: minutes,
+            seconds: seconds,
         }
     }
 }
 
 impl std::fmt::Display for Duration {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{}:{}:{}", -self.hours, -self.minutes, -self.seconds)
+        write!(f, "{}:{}:{}", self.hours, self.minutes, self.seconds)
+    }
+}
+
+#[derive(Serialize)]
+pub struct EntryContext {
+    pub id: i32,
+    pub work_date: String,
+    pub start_time: String,
+    pub end_time: Option<String>,
+    pub duration: Option<Duration>,
+}
+
+impl From<EntryEntity> for EntryContext {
+    fn from(entity: EntryEntity) -> Self {
+        match entity.end_time {
+            Some(end_time) => EntryContext {
+                id: entity.id,
+                work_date: entity.work_date.to_string(),
+                start_time: entity.start_time.to_string(),
+                end_time: Some(end_time.to_string()),
+                duration: Some(Duration::new(end_time - entity.start_time)),
+            },
+            None => EntryContext {
+                id: entity.id,
+                work_date: entity.work_date.to_string(),
+                start_time: entity.start_time.to_string(),
+                end_time: None,
+                duration: None,
+            },
+        }
     }
 }

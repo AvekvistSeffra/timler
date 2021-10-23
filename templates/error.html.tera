@@ -1,0 +1,9 @@
+{% extends "base" %}
+{% block content %}
+    {% if id %}
+        <p>{{ error }}</p>
+        <p>With id {{ id }}</p>
+    {% else %}
+        {{ error }}
+    {% endif %}
+{% endblock content %}

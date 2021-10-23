@@ -1,11 +1,16 @@
+use std::collections::HashMap;
+
 use crate::{models::EntryEntity, schema::entries, TimlerDb};
 use diesel::prelude::*;
+use rocket_dyn_templates::Template;
 
 pub mod entry;
 pub mod retrieve;
 
+use crate::utility::EntryContext;
+
 #[get("/")]
-pub async fn index(db: TimlerDb) -> String {
+pub async fn index(db: TimlerDb) -> Template {
     let result = db
         .run(move |conn| {
             entries::table
@@ -15,7 +20,12 @@ pub async fn index(db: TimlerDb) -> String {
         .await;
 
     match result {
-        Ok(x) => format!("Latest entry: {}", x),
-        Err(e) => format!("Couldn't fetch entry. \nError: {}", e),
+        Ok(entry) => Template::render("index", EntryContext::from(entry)),
+        Err(e) => {
+            let mut context = HashMap::new();
+            context.insert("error", format!("{}", e));
+
+            Template::render("error", context)
+        }
     }
 }

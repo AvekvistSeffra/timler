@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% block head %}
+        <meta charset="utf-8" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/public/style.css" />
+        <title>{% block title %}{% endblock title %} - Timler</title>
+        {% endblock head%}
+    </head>
+    <body>
+        <div id="content">
+            {% block content %}
+            {% endblock content %}
+            <hr>
+        </div>
+        <footer>
+            {% block footer %}
+            <p>&copy; Hampus Avekvist 2021<br>Timler</p>
+            <a href="/">home</a> <a href="/entries">entries</a>
+            {% endblock footer %}
+        </footer>
+    </body>
+</html>

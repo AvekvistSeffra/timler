@@ -1,0 +1,25 @@
+{% extends "base" %}
+{% import "macros" as macros %}
+
+{% block title %}
+Index
+{% endblock title %}
+
+{% block content %}
+    <h1>index</h1>
+    <a href="/entry">
+        {% if end_time %}
+            start
+        {% else %}
+            end
+        {% endif %}
+    </a>
+    <hr>
+    <h2>latest</h2>
+    <p>date: {{ work_date }}</p>
+    <p>start: {{ start_time }}</p>
+    {% if end_time %}
+        <p>end: {{ end_time }}</p>
+        <p>duration: {{ macros::duration(duration=duration) }}</p>
+    {% endif %}
+{% endblock content %}

@@ -1,0 +1,16 @@
+{% extends "base" %}
+{% import "macros" as macros %}
+
+{% block title %}
+Entry {{ id }}
+{% endblock title %}
+
+{% block content %}
+    <h1>entry {{ id }}</h1>
+    <p>{{ work_date }}</p>
+    <p>{{ start_time }}</p>
+    {% if end_time %}
+        <p>{{ end_time }}</p>
+        <p>{{ macros::duration(duration=duration) }}</p>
+    {% endif %}
+{% endblock content %}

@@ -1,9 +1,7 @@
-use crate::utility::Duration;
-
 use super::schema::entries;
 use chrono::{NaiveDate, NaiveTime};
 
-#[derive(Queryable)]
+#[derive(Queryable, Clone, Copy)]
 pub struct EntryEntity {
     pub id: i32,
     pub work_date: NaiveDate,
@@ -14,14 +12,11 @@ pub struct EntryEntity {
 impl std::fmt::Display for EntryEntity {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self.end_time {
-            Some(end_time) => {
-                let duration = Duration::new(self.start_time - end_time);
-                write!(
-                    f,
-                    "[{}]: start: {}, end: {}, duration: {}",
-                    self.work_date, self.start_time, end_time, duration
-                )
-            }
+            Some(end_time) => write!(
+                f,
+                "[{}]: start: {}, end: {}",
+                self.work_date, self.start_time, end_time
+            ),
             None => write!(f, "[{}]: start: {}", self.work_date, self.start_time),
         }
     }

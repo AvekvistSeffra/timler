@@ -1,0 +1,15 @@
+{% extends "base" %}
+{% import "macros" as macros %}
+
+{% block title %}
+Entries
+{% endblock title %}
+
+{% block content %}
+    <h1>entries</h1>
+    {% for entry in entries %}
+        {% if entry.duration %}
+            <a class="entry" href="/entries/{{entry.id}}">{{ entry.work_date }}: {{ macros::duration(duration=entry.duration) }}</a><br>
+        {% endif %}
+    {% endfor %}
+{% endblock content %}

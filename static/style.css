@@ -1,0 +1,14 @@
+html, body {
+    text-align: center;
+    font-family: 'Montserrat Alternates', sans-serif;
+}
+
+#content {
+    width: 60%;
+    margin: auto;
+}
+
+a, .entry {
+    margin: 50px 15px 50px 15px;
+    font-size: 1.2em;
+}

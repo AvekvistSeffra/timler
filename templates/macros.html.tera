@@ -1,0 +1,3 @@
+{% macro duration(duration) %}
+    {{duration.hours}}:{{duration.minutes}}:{{duration.seconds}}
+{% endmacro duration %}

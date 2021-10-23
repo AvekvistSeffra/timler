@@ -1,24 +1,34 @@
+use std::collections::HashMap;
+
 use diesel::prelude::*;
+use rocket_dyn_templates::Template;
 
-use crate::{models::EntryEntity, schema::entries, TimlerDb};
+use crate::{models::EntryEntity, schema::entries, utility::EntryContext, TimlerDb};
 
-#[get("/<id>")]
-pub async fn read(db: TimlerDb, id: i32) -> String {
-    match db
+#[get("/entries/<id>")]
+pub async fn read(db: TimlerDb, id: i32) -> Template {
+    let result = db
         .run(move |conn| {
             entries::table
                 .filter(entries::id.eq(id))
                 .first::<EntryEntity>(conn)
         })
-        .await
-    {
-        Ok(x) => format!("{}", x),
-        Err(e) => format!("Entry with id {} doesn't exist. \nError: {}", id, e),
+        .await;
+
+    match result {
+        Ok(entry) => Template::render("entry", EntryContext::from(entry)),
+        Err(e) => {
+            let mut context = HashMap::new();
+            context.insert("error", format!("{}", e));
+            context.insert("id", format!("{}", id));
+
+            Template::render("error", context)
+        }
     }
 }
 
-#[get("/")]
-pub async fn list(db: TimlerDb) -> String {
+#[get("/entries")]
+pub async fn list(db: TimlerDb) -> Template {
     let result = db
         .run(move |conn| {
             entries::table
@@ -30,14 +40,17 @@ pub async fn list(db: TimlerDb) -> String {
         .await;
 
     if result.len() <= 0 {
-        return String::from("Couldn't find any entries. ");
+        let mut context = HashMap::new();
+        context.insert("error", String::from("No entries"));
+
+        return Template::render("error", context);
     }
 
-    let mut return_string = String::new();
+    let mut context: HashMap<&str, Vec<EntryContext>> = HashMap::new();
+    context.insert(
+        "entries",
+        result.iter().map(|x| EntryContext::from(*x)).collect(),
+    );
 
-    for entry in result {
-        return_string.push_str(&format!("{}\n", entry))
-    }
-
-    return_string
+    Template::render("entries", context)
 }

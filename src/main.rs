@@ -5,7 +5,13 @@ extern crate rocket;
 extern crate diesel;
 
 #[macro_use]
+extern crate serde;
+
+#[macro_use]
 extern crate rocket_sync_db_pools;
+
+use rocket::fs::FileServer;
+use rocket_dyn_templates::Template;
 
 mod models;
 mod routes;
@@ -22,7 +28,8 @@ pub struct TimlerDb(diesel::MysqlConnection);
 #[launch]
 fn rocket() -> _ {
     rocket::build()
-        .mount("/", routes![index, handle_entry])
-        .mount("/entries", routes![list, read])
+        .mount("/", routes![index, handle_entry, list, read])
+        .mount("/public", FileServer::from("static/"))
         .attach(TimlerDb::fairing())
+        .attach(Template::fairing())
 }
